@@ -9,61 +9,81 @@ PROFILO FOUNDER:
 
 export async function POST(req) {
   try {
-    const { idea, history, question } = await req.json();
+    const { idea, analysis, history, question } = await req.json();
 
     const isChat = !!question;
 
     let messages;
     if (isChat) {
-      const systemContext = `Sei un CTO esperto di architetture AI-first per startup solo-founder.\n${FOUNDER_PROFILE}\nL'utente ha già ricevuto questa analisi tecnica:\n${idea}\nRispondi in modo conciso e pratico alle domande di follow-up.`;
+      const systemContext = `Sei un esperto di market validation e go-to-market per startup AI-first solo-founder.\n${FOUNDER_PROFILE}\nL'utente ha già ricevuto questa analisi di mercato:\n${analysis}\nRispondi in modo conciso e pratico alle domande di follow-up.`;
       messages = [
         { role: "user", content: systemContext },
-        { role: "assistant", content: "Perfetto, sono pronto a rispondere alle tue domande sull'analisi tecnica." },
+        { role: "assistant", content: "Perfetto, sono pronto a rispondere alle tue domande sull'analisi di mercato." },
         ...(history || []),
         { role: "user", content: question },
       ];
     } else {
-      const prompt = `Sei un CTO esperto di architetture AI-first e cloud per startup solo-founder.
+      const prompt = `Sei un esperto di market validation, ricerca di mercato e go-to-market per startup AI-first solo-founder.
 
 ${FOUNDER_PROFILE}
 
-Analizza questa idea di startup dal punto di vista della FATTIBILITÀ TECNICA:
+Analizza questa idea di startup dal punto di vista della VALIDAZIONE DI MERCATO:
 
-IDEA:
+IDEA + ANALISI TECNICA:
 ${idea}
 
 Produci un'analisi strutturata in questo formato ESATTO (rispetta tutti i label):
 
-SEMAFORO: [GO / ATTENZIONE / NO-GO]
-MOTIVAZIONE_SEMAFORO: [1-2 frasi che spiegano il verdetto]
+SEMAFORO_MERCATO: [GO / ATTENZIONE / NO-GO]
+MOTIVAZIONE_SEMAFORO: [2-3 frasi che spiegano il verdetto di mercato]
 
-TOOL_AI:
-- [Nome tool]: [Uso specifico nel progetto] | Costo: [€/mese stimato per uso realistico startup early stage]
-- [ripeti per ogni tool necessario]
+ICP_PRIMARIO:
+- Ruolo: [es. Responsabile acquisizione contenuti broadcaster]
+- Azienda: [es. Broadcaster TV mid-size, 50-500 dipendenti]
+- Problema: [problema principale che risolvi]
+- Budget: [budget tipico disponibile]
+- Trigger: [evento che lo spinge a cercare una soluzione]
 
-TOOL_CLOUD:
-- [Nome servizio]: [Uso specifico] | Costo: [€/mese stimato]
-- [ripeti per ogni servizio necessario]
+ICP_SECONDARIO:
+- Ruolo: [secondo profilo cliente]
+- Azienda: [tipo azienda]
+- Problema: [problema che risolvi]
+- Budget: [budget tipico]
+- Trigger: [trigger d'acquisto]
 
-COSTO_TOTALE_MESE: [€XX-XX/mese a regime con 100 utenti attivi]
-COSTO_MVP_FASE: [€XX/mese per i primi 3 mesi con 0-10 utenti test]
+TAM: [Mercato totale globale in €/$ con fonte o ragionamento]
+SAM: [Mercato raggiungibile nei mercati target Francia+Italia+Europa in €/$]
+SOM: [Mercato ottenibile realisticamente anno 1-2 in €/$]
 
-LIMITI_TECNICI:
-- [Limite o rischio tecnico concreto]
-- [ripeti per ogni limite]
+COMPETITOR_DIRETTI:
+- [Nome] | [Prezzo] | [Gap che tu colmi]
+- [ripeti per ogni competitor diretto]
 
-HUMAN_IN_LOOP:
-- [Dove e quando il founder deve intervenire manualmente, con frequenza stimata]
-- [ripeti per ogni intervento]
+COMPETITOR_INDIRETTI:
+- [Nome] | [Prezzo] | [Perché è alternativa indiretta]
+- [ripeti per ogni competitor indiretto]
 
-ARCHITETTURA_CONSIGLIATA: [Descrizione in 3-4 frasi dello stack tecnico ottimale]
+VANTAGGIO_COMPETITIVO: [2-3 frasi sul vantaggio difendibile dato dal profilo founder]
 
-PROSSIMI_PASSI_TECNICI:
-1. [Prima cosa da fare tecnicamente, questa settimana]
-2. [Seconda]
-3. [Terza]
+DOMANDA_REALE:
+- [Segnale concreto di domanda esistente, es. community, ricerche, trend]
+- [ripeti per ogni segnale]
 
-Sii specifico con i prezzi reali (usa listini pubblici 2024-2025). No ottimismo, no vaghezze.`;
+WILLINGNESS_TO_PAY:
+- Segmento: [nome segmento] | WTP: [range €/mese o €/progetto] | Modello: [subscription/one-shot/usage]
+- [ripeti per ogni segmento]
+
+CANALI_ACQUISIZIONE:
+- [Canale] | [Tattica specifica] | [Costo stimato per lead]
+- [ripeti per ogni canale]
+
+RISCHI_MERCATO:
+- [Rischio concreto di mercato]
+- [ripeti per ogni rischio]
+
+VALIDAZIONE_RAPIDA: [3-5 azioni concrete da fare questa settimana per validare senza costruire nulla, con stima tempo/costo]
+
+Sii specifico e realistico. No ottimismo, no vaghezze. Usa dati reali dove possibile.`;
 
       messages = [{ role: "user", content: prompt }];
     }
@@ -77,7 +97,7 @@ Sii specifico con i prezzi reali (usa listini pubblici 2024-2025). No ottimismo,
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 2000,
+        max_tokens: 3000,
         stream: true,
         messages,
       }),
