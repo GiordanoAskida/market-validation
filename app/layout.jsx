@@ -1,12 +1,8 @@
-export const metadata = {
-  title: "App 3 — Validazione di Mercato",
-  description: "Valida il mercato della tua startup AI-first",
-};
-
+export const metadata = { title: "AI Startup — Pre-validazione Tecnica", description: "App 2: verifica fattibilità tecnica AI" };
 export default function RootLayout({ children }) {
   return (
     <html lang="it">
-      <body>{children}</body>
+      <body style={{ margin: 0, padding: 0, background: "#060608" }}>{children}</body>
     </html>
   );
 }

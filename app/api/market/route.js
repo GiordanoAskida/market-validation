@@ -3,90 +3,67 @@ PROFILO FOUNDER:
 - Background: Tech/Dev + Giornalismo/Media + 15+ anni workflow broadcaster TV
 - Solo, nessun dev, budget €5k iniziale, AI agents al 95%, 5% lavoro manuale
 - Obiettivo: lifestyle business, no investitori, no scala enterprise
-- Mercati prioritari: Francia (TF1, M6, France TV, Arte, Canal+), Italia (RAI, Mediaset), Europa
-- Clienti target: Creator, Freelancer video, Consumer B2C, Broadcaster TV
+- Mercati: Francia (TF1, M6, France TV, Arte, Canal+), Italia (RAI, Mediaset), Europa
+- Clienti target: Creator, Freelancer video, Consumer B2C
 `;
 
 export async function POST(req) {
   try {
-    const { idea, analysis, history, question } = await req.json();
+    const { idea, history, question } = await req.json();
 
     const isChat = !!question;
 
     let messages;
-
     if (isChat) {
-      const systemContext = `Sei un esperto di market validation e go-to-market per startup AI-first in Europa.\n${FOUNDER_PROFILE}\nL'utente ha già ricevuto questa analisi di mercato:\n${analysis}\nRispondi in modo conciso e pratico alle domande di follow-up.`;
+      const systemContext = `Sei un CTO esperto di architetture AI-first per startup solo-founder.\n${FOUNDER_PROFILE}\nL'utente ha già ricevuto questa analisi tecnica:\n${idea}\nRispondi in modo conciso e pratico alle domande di follow-up.`;
       messages = [
         { role: "user", content: systemContext },
-        { role: "assistant", content: "Perfetto, sono pronto a rispondere alle tue domande sull'analisi di mercato." },
+        { role: "assistant", content: "Perfetto, sono pronto a rispondere alle tue domande sull'analisi tecnica." },
         ...(history || []),
         { role: "user", content: question },
       ];
     } else {
-      const prompt = `Sei un esperto di market validation, ricerca di mercato e go-to-market per startup AI-first in Europa.
+      const prompt = `Sei un CTO esperto di architetture AI-first e cloud per startup solo-founder.
 
 ${FOUNDER_PROFILE}
 
-Analizza questa idea di startup dal punto di vista della VALIDAZIONE DI MERCATO:
+Analizza questa idea di startup dal punto di vista della FATTIBILITÀ TECNICA:
 
-IDEA + ANALISI TECNICA:
+IDEA:
 ${idea}
 
 Produci un'analisi strutturata in questo formato ESATTO (rispetta tutti i label):
 
-SEMAFORO_MERCATO: [GO / ATTENZIONE / NO-GO]
-MOTIVAZIONE_SEMAFORO: [1-2 frasi che spiegano il verdetto di mercato]
+SEMAFORO: [GO / ATTENZIONE / NO-GO]
+MOTIVAZIONE_SEMAFORO: [1-2 frasi che spiegano il verdetto]
 
-ICP_PRIMARIO:
-- Ruolo/Tipo: [Chi è esattamente — es. "Video editor freelance 30-45 anni"]
-- Paese: [Mercato principale con motivazione]
-- Pain point principale: [Problema specifico che l'idea risolve]
-- Frequenza del problema: [Quanto spesso lo vive — es. "ogni settimana nella post-produzione"]
-- Budget disponibile: [Quanto spende già per soluzioni simili]
-- Dove si trova online: [Community, forum, social, eventi]
+TOOL_AI:
+- [Nome tool]: [Uso specifico nel progetto] | Costo: [€/mese stimato per uso realistico startup early stage]
+- [ripeti per ogni tool necessario]
 
-ICP_SECONDARIO:
-- Ruolo/Tipo: [Secondo profilo cliente]
-- Paese: [Mercato]
-- Pain point principale: [Problema]
-- Budget disponibile: [Budget]
+TOOL_CLOUD:
+- [Nome servizio]: [Uso specifico] | Costo: [€/mese stimato]
+- [ripeti per ogni servizio necessario]
 
-TAM: [Mercato totale indirizzabile in €/anno con fonte o metodologia di calcolo]
-SAM: [Mercato raggiungibile per questo founder in €/anno]
-SOM: [Obiettivo realistico anno 1-2 in €/anno]
+COSTO_TOTALE_MESE: [€XX-XX/mese a regime con 100 utenti attivi]
+COSTO_MVP_FASE: [€XX/mese per i primi 3 mesi con 0-10 utenti test]
 
-COMPETITOR_DIRETTI:
-- [Nome]: [Cosa fa] | Prezzo: [€/mese] | Punto debole: [Gap che puoi sfruttare]
-- [ripeti per ogni competitor diretto, max 4]
+LIMITI_TECNICI:
+- [Limite o rischio tecnico concreto]
+- [ripeti per ogni limite]
 
-COMPETITOR_INDIRETTI:
-- [Nome o categoria]: [Perché è alternativa indiretta] | Gap: [Opportunità]
-- [ripeti per ogni competitor indiretto, max 3]
+HUMAN_IN_LOOP:
+- [Dove e quando il founder deve intervenire manualmente, con frequenza stimata]
+- [ripeti per ogni intervento]
 
-VANTAGGIO_COMPETITIVO: [In 2-3 frasi, quale posizionamento unico può avere questa idea rispetto ai competitor, considerando il profilo del founder]
+ARCHITETTURA_CONSIGLIATA: [Descrizione in 3-4 frasi dello stack tecnico ottimale]
 
-DOMANDA_REALE:
-- [Segnale concreto di domanda esistente — es. community, ricerche Google, thread Reddit, job posting, ecc.]
-- [ripeti per ogni segnale, min 3]
+PROSSIMI_PASSI_TECNICI:
+1. [Prima cosa da fare tecnicamente, questa settimana]
+2. [Seconda]
+3. [Terza]
 
-WILLINGNESS_TO_PAY:
-- Modello consigliato: [SaaS mensile / One-shot / Freemium+Pro / Pay-per-use / B2B annuale]
-- Prezzo MVP realistico: [€XX/mese o €XX/uso con motivazione]
-- Prezzo a regime: [€XX/mese con motivazione]
-- Benchmark: [Prodotto simile che il cliente già paga a prezzo simile]
-
-CANALI_ACQUISIZIONE:
-- [Canale]: [Tattica specifica per raggiungere l'ICP] | Costo stimato: [€/mese o gratuito]
-- [ripeti per ogni canale, max 4]
-
-RISCHI_MERCATO:
-- [Rischio concreto di mercato — es. stagionalità, dipendenza da piattaforma, regulatory, ecc.]
-- [ripeti per ogni rischio]
-
-VALIDAZIONE_RAPIDA: [3 azioni concrete che il founder può fare QUESTA SETTIMANA per validare la domanda reale, senza costruire nulla — es. landing page, interviste, gruppo LinkedIn, ecc.]
-
-Sii specifico, usa dati reali dove possibile, calibra tutto sul mercato europeo (Francia + Italia prioritari). No ottimismo, no vaghezze.`;
+Sii specifico con i prezzi reali (usa listini pubblici 2024-2025). No ottimismo, no vaghezze.`;
 
       messages = [{ role: "user", content: prompt }];
     }
@@ -100,7 +77,7 @@ Sii specifico, usa dati reali dove possibile, calibra tutto sul mercato europeo 
       },
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
-        max_tokens: 2500,
+        max_tokens: 2000,
         stream: true,
         messages,
       }),
@@ -108,10 +85,7 @@ Sii specifico, usa dati reali dove possibile, calibra tutto sul mercato europeo 
 
     if (!anthropicResp.ok) {
       const err = await anthropicResp.text();
-      return new Response(JSON.stringify({ error: err }), {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      });
+      return new Response(JSON.stringify({ error: err }), { status: 500, headers: { "Content-Type": "application/json" } });
     }
 
     return new Response(anthropicResp.body, {
@@ -122,9 +96,6 @@ Sii specifico, usa dati reali dove possibile, calibra tutto sul mercato europeo 
       },
     });
   } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    return new Response(JSON.stringify({ error: e.message }), { status: 500, headers: { "Content-Type": "application/json" } });
   }
 }
